@@ -53,8 +53,6 @@ export default function planned() {
           Important Tasks
         </h1>
 
-      
-
         <div className="mt-5 ">
           <input
             className="w-full outline-none h-10 rounded-md p-3 shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px] overflow-auto"
@@ -89,15 +87,18 @@ export default function planned() {
           <ul className="">
             {list.map((item, i) => {
               return (
-                <li
-                  key={i}
-                  className="flex justify-between items-center w-full outline-none h-8 rounded-md p-5 mb-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
-                >
-                  {item}
+                <div className="flex justify-between items-center w-full outline-none h-8 rounded-md p-5 mb-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+                  <div className="flex justify-between item gap-2">
+                    <div className="h-4 w-4 bg-white border border-black rounded-full inline-block"></div>
+
+                    <li key={i} className=" ">
+                      {item}
+                    </li>
+                  </div>
                   <button className="" onClick={deleteOn}>
                     <img src="./delete.png" className="w-6 h-6  " />
                   </button>
-                </li>
+                </div>
               );
             })}
           </ul>
