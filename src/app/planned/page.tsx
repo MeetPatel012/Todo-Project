@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 
 interface Element {
   id: string;
-  name: string;
+  name: any;
+  isChecked: boolean;
 }
 
 export default function planned() {
-  let initTodo;
+  let initTodo = [] as Element[];
   if (localStorage.getItem("plannedtodos") === null) {
     initTodo = [];
   } else {
@@ -15,17 +16,25 @@ export default function planned() {
   }
 
   const [value, setValue] = useState("");
-  const [list, setList] = useState<any[]>(initTodo);
+  const [list, setList] = useState<Element[]>(initTodo);
   const [toggleSubmit, setToggleSubmit] = useState(true);
   const [isEditItem, setIsEditItem] = useState(null);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: { target: { value: string } }) => {
     setValue(e.target.value);
   };
 
   useEffect(() => {
     localStorage.setItem("plannedtodos", JSON.stringify(list));
   }, [list]);
+
+  const handlecheckbox = (id: string) => {
+    const data = list.map((item) =>
+      item.id === id ? { ...item, isChecked: !item.isChecked } : item
+    );
+    setList(data);
+    console.log(data);
+  };
 
   //-----------------------------------------------------------add the list
   const addtodo = () => {
@@ -44,26 +53,20 @@ export default function planned() {
       setValue("");
       setIsEditItem(null);
     } else {
-      const allValueData = { id: new Date().getTime().toString(), name: value };
+      const allValueData = {
+        id: new Date().getTime().toString(),
+        name: value,
+        isChecked: false,
+      };
       setList([...list, allValueData]);
       setValue("");
     }
   };
 
-  // delete selcted items
+  //-----------------------------------------------------------delete selcted items
   const selectedDelete = (e: any) => {
     let select;
   };
-
-  /*
-  -----------------------------------------------------------delete the list
-  const deleteOn = (e: any) => {
-    let deleteone = [...list];
-    deleteone.splice(e, 1);
-    setList([...deleteone]);
-    localStorage.setItem("plannedtodos", JSON.stringify(list));
-  };
-  */
 
   //-----------------------------------------------------------delete the list - vinod thapa youtube
   const deleteOn = (index: string) => {
@@ -111,33 +114,33 @@ export default function planned() {
           />
 
           <div className="flex justify-between mt-7">
-            {toggleSubmit ? (
-              <div>
-                <button
-                  className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-1 px-3 rounded w-20"
-                  onClick={addtodo}
-                >
-                  Add
-                </button>
-              </div>
-            ) : (
+            {/* {toggleSubmit ? ( */}
+            <div>
+              <button
+                className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-1 px-3 rounded w-20"
+                onClick={addtodo}
+              >
+                Add
+              </button>
+            </div>
+            {/* ) : (
               <div className="flex justify-normal items-center bg-gray-600 hover:bg-black-800 font-bold py-1 px-3 rounded text-white h-8 w-48 text-nowrap">
                 <img src="./edit.png" className="w-5 h-5 mr-2" />
                 <button className="mr-2" onClick={addtodo}>
                   Click Hear to Edit
                 </button>
               </div>
-            )}
+            )} */}
 
             {/* Selected delete */}
-            <div>
+            {/* <div>
               <button
                 className="bg-green-600 hover:bg-green-800 text-white font-bold py-1 px-3 rounded w-auto"
                 onClick={selectedDelete}
               >
                 Selected Delete
               </button>
-            </div>
+            </div> */}
             {/* Selected delete */}
 
             <div>
@@ -155,21 +158,73 @@ export default function planned() {
           <ul className="">
             {list.map((item) => {
               return (
-                <li
-                  key={item.id}
-                  className="flex justify-between items-center w-full outline-none h-8 rounded-md p-5 mb-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
-                >
-                  {item.name}
+                <div key={item.id} className="flex gap-6">
+                  {toggleSubmit ? (
+                    <>
+                      <li
+                        className={`flex justify-between items-center w-full outline-none h-8 rounded-md p-5 mb-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]
+                      ${item.isChecked ? "line-through" : ""}
+                      `}
+                      >
+                        <span
+                          onDoubleClick={() => console.log("doule clicked")}
+                        >
+                          {item.name}
+                        </span>
+                        <div>
+                          <button className="" onClick={() => editOn(item.id)}>
+                            <img
+                              src="./editing.png"
+                              className="w-6 h-6 mr-7 "
+                            />
+                          </button>
+                          <button
+                            className=""
+                            onClick={() => deleteOn(item.id)}
+                          >
+                            <img src="./delete.png" className="w-6 h-6 " />
+                          </button>
+                        </div>
+                      </li>
 
-                  <div>
-                    <button className="" onClick={() => editOn(item.id)}>
-                      <img src="./editing.png" className="w-6 h-6 mr-7 " />
-                    </button>
-                    <button className="" onClick={() => deleteOn(item.id)}>
-                      <img src="./delete.png" className="w-6 h-6 " />
-                    </button>
-                  </div>
-                </li>
+                      <div className="p-1">
+                        <input
+                          name="checkbox1"
+                          // value={checked.checkbox1}
+                          defaultChecked={item.isChecked}
+                          onChange={() => handlecheckbox(item.id)}
+                          type="checkbox"
+                          className="w-6 h-6 shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                          id="hs-default-checkbox"
+                        />
+                        <label
+                          htmlFor="hs-default-checkbox"
+                          className="text-sm text-gray-500 ms-3 dark:text-neutral-400"
+                        >
+                          {/* Default checkbox */}
+                        </label>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-center items-center w-full bg-white rounded-md  shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]  gap-2 ">
+                        <input
+                          className="w-full p-3 h-10  rounded-md  outline-none "
+                          type="text"
+                          value={value}
+                          onChange={handleChange}
+                          placeholder="Plese your plans here..."
+                        />
+                        {/* {item.name} */}
+                        <img
+                          src="./check.png"
+                          className="w-6 h-6 flex justify-center items-center mr-3"
+                          onClick={addtodo}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
               );
             })}
           </ul>
