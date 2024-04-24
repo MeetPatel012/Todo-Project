@@ -20,6 +20,8 @@ export default function planned() {
   const [toggleSubmit, setToggleSubmit] = useState(true);
   const [isEditItem, setIsEditItem] = useState(null);
 
+  const [selectcheck, setSelectcheck] = useState(true);
+
   const handleChange = (e: { target: { value: string } }) => {
     setValue(e.target.value);
   };
@@ -64,8 +66,21 @@ export default function planned() {
   };
 
   //-----------------------------------------------------------delete selcted items
-  const selectedDelete = (e: any) => {
-    let select;
+  const selectedDelete = (isChecked: any) => {
+    if (selectcheck === isChecked) {
+      setSelectcheck(isChecked);
+    } else setSelectcheck(isChecked);
+
+    setSelectcheck(isChecked);
+  };
+
+  //-----------------------------------------------------------delete selcted items
+  const deleteSelected = (selectcheck: any) => {
+    console.log("selectcheck", selectcheck);
+
+    let deleteone = [...list];
+    deleteone.splice(selectcheck);
+    setList([...deleteone]);
   };
 
   //-----------------------------------------------------------delete the list - vinod thapa youtube
@@ -123,6 +138,18 @@ export default function planned() {
                 Add
               </button>
             </div>
+
+            {selectcheck ? null : (
+              <div>
+                <button
+                  className="bg-green-600 hover:bg-green-800 text-white font-bold py-1 px-3 rounded w-auto"
+                  onClick={() => deleteSelected(selectcheck)}
+                >
+                  Selected Delete
+                </button>
+              </div>
+            )}
+
             {/* ) : (
               <div className="flex justify-normal items-center bg-gray-600 hover:bg-black-800 font-bold py-1 px-3 rounded text-white h-8 w-48 text-nowrap">
                 <img src="./edit.png" className="w-5 h-5 mr-2" />
@@ -190,13 +217,32 @@ export default function planned() {
                       <div className="p-1">
                         <input
                           name="checkbox1"
-                          // value={checked.checkbox1}
                           defaultChecked={item.isChecked}
                           onChange={() => handlecheckbox(item.id)}
+                          onClick={() => selectedDelete(item.isChecked)}
                           type="checkbox"
-                          className="w-6 h-6 shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                          id="hs-default-checkbox"
+                          className={`w-6 h-6 shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                          id="hs-default-checkbox
+                          
+                          
+                          
+                          `}
                         />
+
+                        {/* {
+
+item.isChecked ? 
+                        <div>
+                          <button
+                            className="bg-green-600 hover:bg-green-800 text-white font-bold py-1 px-3 rounded w-auto"
+                            onClick={selectedDelete}
+                          >
+                            Selected Delete
+                          </button>
+                        </div> 
+: ''
+} */}
+
                         <label
                           htmlFor="hs-default-checkbox"
                           className="text-sm text-gray-500 ms-3 dark:text-neutral-400"
@@ -211,15 +257,15 @@ export default function planned() {
                         <input
                           className="w-full p-3 h-10  rounded-md  outline-none "
                           type="text"
-                          value={value}
-                          onChange={handleChange}
+                          // value={value}
+                          // onChange={handleChange}
                           placeholder="Plese your plans here..."
                         />
-                        {/* {item.name} */}
+                        {item.name}
                         <img
                           src="./check.png"
                           className="w-6 h-6 flex justify-center items-center mr-3"
-                          onClick={addtodo}
+                          // onClick={addtodo}
                         />
                       </div>
                     </>
