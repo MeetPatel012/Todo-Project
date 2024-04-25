@@ -20,6 +20,7 @@ export default function planned() {
   const [showEditBtn, setShowEditBtn] = useState("");
   const [editedFieldValue, setEditedFieldValue] = useState("");
   const [editedTodo, setEditedTodo] = useState("");
+  const [check, setCheck] = useState(false);
 
   const handleChange = (e: { target: { value: string } }) => {
     setValue(e.target.value);
@@ -62,12 +63,19 @@ export default function planned() {
   };
 
   //checkbox
-  const handlecheckbox = (id: string) => {
+  const handlecheckbox = (select: Element) => {
     const data = list.map((item) =>
-      item.id === id ? { ...item, isChecked: !item.isChecked } : item
+      item.id === select.id ? { ...item, isChecked: !item.isChecked } : item
     );
     setList(data);
     console.log(data);
+
+    // const checkedIdx = list.findIndex((u) => u.id === select.id);
+    // if (checkedIdx === 1) return;
+    // const updateUser = [...list];
+    // updateUser[checkedIdx].isChecked = !updateUser[checkedIdx].isChecked;
+    // setList(updateUser);
+    // setCheck(select.isChecked);
   };
 
   //Edit if
@@ -76,11 +84,6 @@ export default function planned() {
 
     setEditedFieldValue(selectedTodo.name);
     console.log(selectedTodo);
-  };
-
-  const fieldSet = (select: Element) => {
-    console.log(select.name);
-    console.log(event);
   };
 
   const edittodo = (select: Element) => {
@@ -115,14 +118,28 @@ export default function planned() {
           />
 
           <div className="flex justify-between mt-7">
-            <div>
+            <div className="">
               <button
-                className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-1 px-3 rounded w-20"
+                className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-1 px-2 rounded w-20 flex justify-center items-center"
                 onClick={addtodo}
               >
+                <img src="./plus.png" className="w-3 h-3 items-center mr-2" />
                 Add
               </button>
             </div>
+
+            {/* Selected delete */}
+            {check ? (
+              <div>
+                <button
+                  className="bg-green-600 hover:bg-green-800 text-white font-bold py-1 px-3 rounded w-auto"
+                  // onClick={selectedDelete}
+                >
+                  Selected Delete
+                </button>
+              </div>
+            ) : null}
+            {/* Selected delete */}
 
             <div>
               <button
@@ -146,13 +163,13 @@ export default function planned() {
                         <input
                           className="w-full p-3 h-10  rounded-md  outline-none "
                           type="text"
-                          // value={value}/
-                          // onChange={handleChange}
-                          // value={editedFieldValue}
                           defaultValue={editedFieldValue}
                           onChange={(e) => setEditedTodo(e.target.value)}
-
-                          // placeholder="Plese your plans here..."
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              edittodo(item);
+                            }
+                          }}
                         />
                         <img
                           src="./check.png"
@@ -194,14 +211,12 @@ export default function planned() {
                         <input
                           name="checkbox1"
                           defaultChecked={item.isChecked}
-                          onChange={() => handlecheckbox(item.id)}
-                          // onClick={() => selectedDelete(item.isChecked)}
+                          onChange={() => handlecheckbox(item)}
                           type="checkbox"
                           className={`w-6 h-6 shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
                           id="hs-default-checkbox
                           
-                          
-                          
+                      
                           `}
                         />
 
