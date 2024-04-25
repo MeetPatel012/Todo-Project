@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 interface Element {
   id: string;
-  name: any;
+  name: string;
   isChecked: boolean;
 }
 
@@ -17,6 +17,9 @@ export default function planned() {
 
   const [value, setValue] = useState("");
   const [list, setList] = useState<Element[]>(initTodo);
+  const [showEditBtn, setShowEditBtn] = useState("");
+  const [editedFieldValue, setEditedFieldValue] = useState("");
+  const [editedTodo, setEditedTodo] = useState("");
 
   const handleChange = (e: { target: { value: string } }) => {
     setValue(e.target.value);
@@ -67,6 +70,28 @@ export default function planned() {
     console.log(data);
   };
 
+  //Edit if
+  const clickOnEdit = (selectedTodo: Element) => {
+    setShowEditBtn(selectedTodo.id);
+
+    setEditedFieldValue(selectedTodo.name);
+    console.log(selectedTodo);
+  };
+
+  const fieldSet = (select: Element) => {
+    console.log(select.name);
+    console.log(event);
+  };
+
+  const edittodo = (select: Element) => {
+    const edit = list.map((item) =>
+      item.id === select.id ? { ...item, name: editedTodo || item.name } : item
+    );
+    console.log("edit", edit);
+    setShowEditBtn("");
+    setList(edit);
+  };
+
   return (
     <main className="m-5">
       <div className="ml-2 mt-8">
@@ -115,41 +140,80 @@ export default function planned() {
             {list.map((item) => {
               return (
                 <div key={item.id} className="flex gap-6">
-                  <li
-                    className={`flex justify-between items-center w-full outline-none h-8 rounded-md p-5 mb-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]
+                  {showEditBtn === item.id ? (
+                    <>
+                      <div className="flex justify-center items-center w-full mb-5 bg-white rounded-md  shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px] ">
+                        <input
+                          className="w-full p-3 h-10  rounded-md  outline-none "
+                          type="text"
+                          // value={value}/
+                          // onChange={handleChange}
+                          // value={editedFieldValue}
+                          defaultValue={editedFieldValue}
+                          onChange={(e) => setEditedTodo(e.target.value)}
+
+                          // placeholder="Plese your plans here..."
+                        />
+                        <img
+                          src="./check.png"
+                          className="w-6 h-6 flex justify-center items-center mr-3"
+                          onClick={() => edittodo(item)}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-between items-center w-full outline-none h-8 rounded-md p-5 mb-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+                        <li
+                          className={`   flex justify-between items-center w-full
                     ${item.isChecked ? "line-through" : ""}
                     `}
-                  >
-                    {item.name}
-                    <div>
-                      <button className="" onClick={() => deleteOn(item.id)}>
-                        <img src="./delete.png" className="w-6 h-6  " />
-                      </button>
-                    </div>
-                  </li>
+                        >
+                          {item.name}
+                          <div>
+                            <button
+                              className=""
+                              onClick={() => clickOnEdit(item)}
+                            >
+                              <img
+                                src="./editing.png"
+                                className="w-6 h-6 mr-7 "
+                              />
+                            </button>
+                            <button
+                              className=""
+                              onClick={() => deleteOn(item.id)}
+                            >
+                              <img src="./delete.png" className="w-6 h-6  " />
+                            </button>
+                          </div>
+                        </li>
+                      </div>
 
-                  <div className="p-1">
-                    <input
-                      name="checkbox1"
-                      defaultChecked={item.isChecked}
-                      onChange={() => handlecheckbox(item.id)}
-                      // onClick={() => selectedDelete(item.isChecked)}
-                      type="checkbox"
-                      className={`w-6 h-6 shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                      <div className="p-1">
+                        <input
+                          name="checkbox1"
+                          defaultChecked={item.isChecked}
+                          onChange={() => handlecheckbox(item.id)}
+                          // onClick={() => selectedDelete(item.isChecked)}
+                          type="checkbox"
+                          className={`w-6 h-6 shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
                           id="hs-default-checkbox
                           
                           
                           
                           `}
-                    />
+                        />
 
-                    <label
-                      htmlFor="hs-default-checkbox"
-                      className="text-sm text-gray-500 ms-3 dark:text-neutral-400"
-                    >
-                      {/* Default checkbox */}
-                    </label>
-                  </div>
+                        <label
+                          htmlFor="hs-default-checkbox"
+                          className="text-sm text-gray-500 ms-3 dark:text-neutral-400"
+                        >
+                          {/* Default checkbox */}
+                        </label>
+                      </div>
+                    </>
+                  )}
                 </div>
               );
             })}
