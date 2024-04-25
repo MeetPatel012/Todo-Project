@@ -26,6 +26,10 @@ export default function planned() {
     setValue(e.target.value);
   };
 
+  useEffect(() => {
+    localStorage.setItem("assignedtodo", JSON.stringify(list));
+  }, [list]);
+
   //add the list
   const addtodo = () => {
     if (!value) {
@@ -40,10 +44,6 @@ export default function planned() {
     console.log("When Add", allInputData);
     setValue("");
   };
-
-  useEffect(() => {
-    localStorage.setItem("assignedtodo", JSON.stringify(list));
-  }, [list]);
 
   //delete the list
   const deleteOn = (index: any) => {
@@ -69,13 +69,6 @@ export default function planned() {
     );
     setList(data);
     console.log(data);
-
-    // const checkedIdx = list.findIndex((u) => u.id === select.id);
-    // if (checkedIdx === 1) return;
-    // const updateUser = [...list];
-    // updateUser[checkedIdx].isChecked = !updateUser[checkedIdx].isChecked;
-    // setList(updateUser);
-    // setCheck(select.isChecked);
   };
 
   //Edit if
@@ -86,6 +79,7 @@ export default function planned() {
     console.log(selectedTodo);
   };
 
+  // Edit todo
   const edittodo = (select: Element) => {
     const edit = list.map((item) =>
       item.id === select.id ? { ...item, name: editedTodo || item.name } : item
@@ -93,6 +87,18 @@ export default function planned() {
     console.log("edit", edit);
     setShowEditBtn("");
     setList(edit);
+  };
+
+  // check the items
+  useEffect(() => {
+    const anyChecked = list.some((item) => item.isChecked);
+    setCheck(anyChecked);
+  }, [list]);
+
+  //delete selected items
+  const deleteCheckedItems = () => {
+    const updatedList = list.filter((item) => !item.isChecked);
+    setList(updatedList);
   };
 
   return (
@@ -133,7 +139,7 @@ export default function planned() {
               <div>
                 <button
                   className="bg-green-600 hover:bg-green-800 text-white font-bold py-1 px-3 rounded w-auto"
-                  // onClick={selectedDelete}
+                  onClick={deleteCheckedItems}
                 >
                   Selected Delete
                 </button>
@@ -212,6 +218,7 @@ export default function planned() {
                           name="checkbox1"
                           defaultChecked={item.isChecked}
                           onChange={() => handlecheckbox(item)}
+                          checked={item.isChecked}
                           type="checkbox"
                           className={`w-6 h-6 shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
                           id="hs-default-checkbox
