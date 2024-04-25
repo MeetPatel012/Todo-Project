@@ -1,8 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 
+interface Element {
+  id: string;
+  name: any;
+}
+
 export default function planned() {
-  let initTodo;
+  let initTodo = [] as Element[];
   if (localStorage.getItem("assignedtodo") === null) {
     initTodo = [];
   } else {
@@ -10,18 +15,20 @@ export default function planned() {
   }
 
   const [value, setValue] = useState("");
-  const [list, setList] = useState<string[]>(initTodo);
+  const [list, setList] = useState<Element[]>(initTodo);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: { target: { value: string } }) => {
     setValue(e.target.value);
   };
 
   //add the list
-  const addtodo = (e: any) => {
+  const addtodo = () => {
     if (!value) {
       return console.log("error");
     }
-    setList([...list, value]);
+    const allInputData = { id: new Date().getTime().toString(), name: value };
+    setList([...list, allInputData]);
+    console.log("When Add", allInputData);
     setValue("");
   };
 
@@ -30,11 +37,12 @@ export default function planned() {
   }, [list]);
 
   //delete the list
-  const deleteOn = (e: any) => {
-    let deleteone = [...list];
-    deleteone.splice(e, 1);
-    setList([...deleteone]);
-
+  const deleteOn = (index: any) => {
+    console.log(index);
+    const updateitem = list.filter((elem) => {
+      return index !== elem.id;
+    });
+    setList(updateitem);
     localStorage.setItem("assignedtodo", JSON.stringify(list));
   };
 
@@ -59,6 +67,11 @@ export default function planned() {
             type="text"
             value={value}
             onChange={handleChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                addtodo();
+              }
+            }}
             placeholder="Plese add asigned task here..."
           />
 
@@ -85,14 +98,14 @@ export default function planned() {
 
         <div className="mt-10 ">
           <ul className="">
-            {list.map((item, i) => {
+            {list.map((item) => {
               return (
                 <li
-                  key={i}
+                  key={item.id}
                   className="flex justify-between items-center w-full outline-none h-8 rounded-md p-5 mb-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
                 >
-                  {item}
-                  <button className="" onClick={deleteOn}>
+                  {item.name}
+                  <button className="" onClick={() => deleteOn(item.id)}>
                     <img src="./delete.png" className="w-6 h-6  " />
                   </button>
                 </li>
