@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 interface Element {
   id: string;
   name: any;
+  isChecked: boolean;
 }
 
 export default function planned() {
@@ -26,7 +27,11 @@ export default function planned() {
     if (!value) {
       return console.log("error");
     }
-    const allInputData = { id: new Date().getTime().toString(), name: value };
+    const allInputData = {
+      id: new Date().getTime().toString(),
+      name: value,
+      isChecked: false,
+    };
     setList([...list, allInputData]);
     console.log("When Add", allInputData);
     setValue("");
@@ -51,6 +56,15 @@ export default function planned() {
     let deleteone = [...list];
     deleteone.splice(e);
     setList([...deleteone]);
+  };
+
+  //checkbox
+  const handlecheckbox = (id: string) => {
+    const data = list.map((item) =>
+      item.id === id ? { ...item, isChecked: !item.isChecked } : item
+    );
+    setList(data);
+    console.log(data);
   };
 
   return (
@@ -100,15 +114,43 @@ export default function planned() {
           <ul className="">
             {list.map((item) => {
               return (
-                <li
-                  key={item.id}
-                  className="flex justify-between items-center w-full outline-none h-8 rounded-md p-5 mb-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
-                >
-                  {item.name}
-                  <button className="" onClick={() => deleteOn(item.id)}>
-                    <img src="./delete.png" className="w-6 h-6  " />
-                  </button>
-                </li>
+                <div key={item.id} className="flex gap-6">
+                  <li
+                    className={`flex justify-between items-center w-full outline-none h-8 rounded-md p-5 mb-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]
+                    ${item.isChecked ? "line-through" : ""}
+                    `}
+                  >
+                    {item.name}
+                    <div>
+                      <button className="" onClick={() => deleteOn(item.id)}>
+                        <img src="./delete.png" className="w-6 h-6  " />
+                      </button>
+                    </div>
+                  </li>
+
+                  <div className="p-1">
+                    <input
+                      name="checkbox1"
+                      defaultChecked={item.isChecked}
+                      onChange={() => handlecheckbox(item.id)}
+                      // onClick={() => selectedDelete(item.isChecked)}
+                      type="checkbox"
+                      className={`w-6 h-6 shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                          id="hs-default-checkbox
+                          
+                          
+                          
+                          `}
+                    />
+
+                    <label
+                      htmlFor="hs-default-checkbox"
+                      className="text-sm text-gray-500 ms-3 dark:text-neutral-400"
+                    >
+                      {/* Default checkbox */}
+                    </label>
+                  </div>
+                </div>
               );
             })}
           </ul>
