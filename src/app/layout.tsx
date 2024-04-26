@@ -22,8 +22,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <Title />
 
-        <div className="grid grid-cols-12 ">
-          <div className="col-span-2 border-r-2 static h-lvh">
+        <div className="grid grid-cols-12 h-lvh ">
+          <div className="col-span-2 border-r-2 static h-auto ">
             <Sidebar />
           </div>
           <div className="col-span-10 bg-[#faf9f8] ">{children}</div>
